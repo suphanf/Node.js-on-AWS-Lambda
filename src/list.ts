@@ -1,4 +1,9 @@
 import { APIGatewayEvent } from 'aws-lambda';
+import Donation from './donation';
+
+const listDonation = () => {
+    return Donation.list();
+};
 
 exports.handler = async (event: APIGatewayEvent) => {
     const response = {
@@ -7,3 +12,5 @@ exports.handler = async (event: APIGatewayEvent) => {
     };
     return response;
 };
+
+export default listDonation;
