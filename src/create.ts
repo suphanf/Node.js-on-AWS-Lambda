@@ -1,20 +1,20 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayEvent, Context, APIGatewayProxyCallback } from 'aws-lambda';
 import Donation from './donation';
 
-const createDonation = (email: string, name: string, amount: number) => {
+type Callback = (err?: string, data?: Donation) => void;
+const createDonation = (email: string, name: string, amount: number, callback: Callback) => {
     const donation = new Donation(email, name, amount);
-    donation.save();
-    return donation;
+    donation.save(callback);
 };
 
-exports.handler = async (event: APIGatewayEvent) => {
+exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
     const body = JSON.parse(event.body || "");
-    const donation = createDonation(body.email, body.name, body.amount);
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify(donation),
-    };
-    return response;
+    createDonation(body.email, body.name, body.amount, (err, data) => {
+        callback(err, {
+            statusCode: 200,
+            body: JSON.stringify(data),
+        });
+    });
 };
 
 export default createDonation;

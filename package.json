@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
-    "start": "nodemon dist/app.js"
+    "start": "AWS_SDK_LOAD_CONFIG=1 nodemon dist/app.js"
   },
   "author": "Suphan Fayong",
   "license": "ISC",

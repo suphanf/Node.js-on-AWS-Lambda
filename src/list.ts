@@ -1,16 +1,21 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayEvent, Context, APIGatewayProxyCallback} from 'aws-lambda';
 import Donation from './donation';
 
-const listDonation = () => {
-    return Donation.list();
+type Callback = (err?: string, data?: Donation[]) => void;
+const listDonation = (email: string, callback: Callback) => {
+    Donation.list(email, (err, data) => {
+        callback(err, data);
+    });
 };
 
-exports.handler = async (event: APIGatewayEvent) => {
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify(listDonation()),
-    };
-    return response;
+exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
+    const email = event.queryStringParameters!.email as string;
+    listDonation(email, (err, data) => {
+        callback(err, {
+            statusCode: 200,
+            body: JSON.stringify(data),
+        });
+    });
 };
 
 export default listDonation;

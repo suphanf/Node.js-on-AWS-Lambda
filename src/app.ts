@@ -5,12 +5,17 @@ import createDonation from './create';
 import listDonation from './list';
 
 const createHandler: RequestHandler = (req, res) => {
-    const donation = createDonation(req.body.email, req.body.name, req.body.amount);
-    res.json(donation);
+    createDonation(req.body.email, req.body.name, req.body.amount, (err, data) => {
+        if (err) { res.json(err); }
+        else { res.json(data); }
+    });
 };
 
 const listHandler: RequestHandler = (req, res) => {
-    res.json(listDonation());
+    listDonation(req.query.email as string, (err, data) => {
+        if (err) { res.json(err); }
+        else { res.json(data); }
+    });
 };
 
 const app = express();
