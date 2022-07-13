@@ -1,0 +1,96 @@
+openapi: "3.0.1"
+info:
+  title: "Donation API"
+  version: "v1"
+paths:
+  /donations:
+    get:
+      description: "Get all donations from an email"
+      parameters:
+      - name: "email"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Email is empty or invalid"
+          content: {}
+        "200":
+          description: "A list of donations by any email"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonationList"
+    post:
+      description: "Create a donation"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Donation"
+          text/plain:
+            schema:
+              $ref: "#/components/schemas/Donation"
+        required: true
+      responses:
+        "400":
+          description: "Donation format is invalid"
+          content: {}
+        "200":
+          description: "A donation is created an returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Donation"
+  /donations/search:
+    get:
+      description: "Scan all donations with pagination"
+      responses:
+        "200":
+          description: "A list of donations by any email"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonationList"
+components:
+  schemas:
+    Donation:
+      title: "Donation"
+      required:
+      - "amount"
+      - "email"
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+        amount:
+          type: "number"
+        name:
+          type: "string"
+        timestamp:
+          type: "string"
+    DonationList:
+      title: "Donation List"
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                format: "email"
+              amount:
+                type: "number"
+              name:
+                type: "string"
+              timestamp:
+                type: "string"
+        last_email:
+          type: "string"
+          format: "email"
+        last_timestamp:
+          type: "string"
