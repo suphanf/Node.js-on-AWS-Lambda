@@ -6,7 +6,7 @@ import listDonation from './list';
 import searchDonation from './search';
 
 const createHandler: RequestHandler = (req, res) => {
-    createDonation(req.body.email, req.body.name, req.body.amount, (err, data) => {
+    createDonation(req.body, (err, data) => {
         if (err) { res.status(400).json(err); }
         else { res.json(data); }
     });
