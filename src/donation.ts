@@ -32,7 +32,7 @@ class Donation {
                 'amount': { S: this.amount.toString() },
                 'timestamp0': { S: this.timestamp.toISOString() },
             }
-        }
+        };
         if (this.name) {
             params.Item.name.S = this.name;
         }
@@ -80,7 +80,7 @@ class Donation {
             TableName: 'Donation',
             Limit: limit ? limit : 20,
             ExclusiveStartKey: startKey,
-        }
+        };
 
         dynamoDB.scan(params, (err, data) => {
             if (err) {
@@ -98,6 +98,22 @@ class Donation {
                     last_timestamp = data.LastEvaluatedKey.timestamp0.S;
                 }
                 callback(undefined, donations, last_email, last_timestamp);
+            }
+        });
+    }
+
+    // for testing purposes only
+    static delete(email: string) {
+        this.list(email, (err, data) => {
+            for (const i in data) {
+                const params = {
+                    TableName: 'Donation',
+                    Key: {
+                        email: { S: data[+i].email },
+                        timestamp0: { S: data[+i].timestamp.toISOString() },
+                    }
+                };
+                dynamoDB.deleteItem(params, () => {});
             }
         });
     }

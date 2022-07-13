@@ -1,6 +1,7 @@
 
 const assert = require('assert');
 const createDonation = require('../dist/create').default;
+const Donation = require('../dist/donation').default;
 
 const TEST_EMAIL = "supposed-to-be-unique@hard-to-guess.co"
 
@@ -102,4 +103,10 @@ describe('Donation Create', function() {
             assert.equal(data, undefined);
         });
     });
+});
+
+after(() => {
+    setTimeout(() => {
+        Donation.delete(TEST_EMAIL);
+    }, 2000);
 });
