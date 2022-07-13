@@ -1,0 +1,47 @@
+Resources:
+  DonationLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Lambda role for Donation API
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+        - Effect: "Allow"
+          Principal: 
+            Service: 
+            - "lambda.amazonaws.com"
+          Action: 
+          - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+  DonationCreate:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: suphan-fayong-public-lambda-functions
+        S3Key: donation-api/create.zip
+      Description: Donation API - Create Function
+      Handler: create.handler
+      Role: !GetAtt DonationLambdaRole.Arn
+      Runtime: nodejs16.x
+  DonationList:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: suphan-fayong-public-lambda-functions
+        S3Key: donation-api/list.zip
+      Description: Donation API - List Function
+      Handler: list.handler
+      Role: !GetAtt DonationLambdaRole.Arn
+      Runtime: nodejs16.x
+  DonationSearch:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: suphan-fayong-public-lambda-functions
+        S3Key: donation-api/search.zip
+      Description: Donation API - Search Function
+      Handler: search.handler
+      Role: !GetAtt DonationLambdaRole.Arn
+      Runtime: nodejs16.x
