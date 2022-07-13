@@ -4,8 +4,8 @@
   "description": "API for making donation to an organization",
   "main": "app.js",
   "scripts": {
+    "build": "tsc",
     "test": "AWS_SDK_LOAD_CONFIG=1 mocha",
-    "tsc": "tsc",
     "start": "AWS_SDK_LOAD_CONFIG=1 nodemon dist/app.js"
   },
   "author": "Suphan Fayong",
