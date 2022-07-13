@@ -1,3 +1,11 @@
+Parameters:
+  S3BucketForLambda:
+    Type: String
+    Default: suphan-fayong-public-lambda-functions
+  S3BucketForOpenAPI:
+    Type: String
+    Default: suphan-fayong-public-openapi-specifications
+
 Resources:
   DonationLambdaRole:
     Type: AWS::IAM::Role
@@ -19,7 +27,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: suphan-fayong-public-lambda-functions
+        S3Bucket: !Ref S3BucketForLambda
         S3Key: donation-api/create.zip
       Description: Donation API - Create Function
       Handler: create.handler
@@ -29,7 +37,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: suphan-fayong-public-lambda-functions
+        S3Bucket: !Ref S3BucketForLambda
         S3Key: donation-api/list.zip
       Description: Donation API - List Function
       Handler: list.handler
@@ -39,7 +47,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: suphan-fayong-public-lambda-functions
+        S3Bucket: !Ref S3BucketForLambda
         S3Key: donation-api/search.zip
       Description: Donation API - Search Function
       Handler: search.handler
@@ -50,7 +58,7 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     Properties:
       BodyS3Location:
-        Bucket: suphan-fayong-public-openapi-specifications
+        Bucket: !Ref S3BucketForOpenAPI
         Key: donation-api/openapi3.yaml
       Description: Making and viewing donations
       Parameters:
