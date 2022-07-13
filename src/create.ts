@@ -3,8 +3,8 @@ import Donation from './donation';
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const amountRegex = /^[0-9]+(\.[0-9]{0,2})?$/;
-type Callback = (err?: string, data?: Donation) => void;
-const createDonation = (body: any, callback: Callback) => {
+type CreateCallback = (err?: string, data?: Donation) => void;
+const createDonation = (body: any, callback: CreateCallback) => {
     const email: string = body.email;
     const name: string = body.name;
     const amount: string = body.amount;

@@ -13,15 +13,14 @@ const createHandler: RequestHandler = (req, res) => {
 };
 
 const listHandler: RequestHandler = (req, res) => {
-    listDonation(req.query.email as string, (err, data) => {
+    listDonation(req.query, (err, data) => {
         if (err) { res.status(400).json(err); }
         else { res.json({ data: data }); }
     });
 };
 
 const searchHandler: RequestHandler = (req, res) => {
-    searchDonation(+req.query.limit!, req.query.email as string, req.query.timestamp as string,
-        (err, data, email, timestamp) => {
+    searchDonation(req.query, (err, data, email, timestamp) => {
         if (err) { res.status(400).json(err); }
         else {
             res.json({
