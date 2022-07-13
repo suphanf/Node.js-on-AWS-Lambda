@@ -2,6 +2,8 @@ import AWS from 'aws-sdk';
 
 const dynamoDB = new AWS.DynamoDB();
 
+type SearchCallback = (err?: string, data?: Donation[], email?: string, timestamp?: string) => void;
+
 class Donation {
     private timestamp: Date;
 
@@ -51,7 +53,7 @@ class Donation {
                 ':email': { S: email }
             },
         };
-        return dynamoDB.query(params, (err, data) => {
+        dynamoDB.query(params, (err, data) => {
             if (err) {
                 callback(err.message);
             } else {
@@ -61,6 +63,41 @@ class Donation {
                     donations.push(Donation.fromAttributeMap(item));
                 }
                 callback(undefined, donations);
+            }
+        });
+    }
+
+    static search(limit: number, email: string, timestamp: string, callback: SearchCallback) {
+        let startKey = undefined;
+        if (email && timestamp) {
+            startKey = {
+                email: { S: email },
+                timestamp0: { S: timestamp },
+            }
+        }
+
+        let params = {
+            TableName: 'Donation',
+            Limit: limit ? limit : 20,
+            ExclusiveStartKey: startKey,
+        }
+
+        dynamoDB.scan(params, (err, data) => {
+            if (err) {
+                callback(err.message);
+            } else {
+                const donations: Donation[] = [];
+                for (const i in data.Items) {
+                    const item = data.Items[+i];
+                    donations.push(Donation.fromAttributeMap(item));
+                }
+                let last_email = undefined;
+                let last_timestamp = undefined;
+                if (data.LastEvaluatedKey) {
+                    last_email = data.LastEvaluatedKey.email.S;
+                    last_timestamp = data.LastEvaluatedKey.timestamp0.S;
+                }
+                callback(undefined, donations, last_email, last_timestamp);
             }
         });
     }

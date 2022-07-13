@@ -1,8 +1,10 @@
 import { APIGatewayEvent, Context, APIGatewayProxyCallback} from 'aws-lambda';
 import Donation from './donation';
 
-type Callback = (err?: string, data?: Donation[]) => void;
-const listDonation = (email: string, callback: Callback) => {
+const listDonation = (email: string, callback: (err?: string, data?: Donation[]) => void) => {
+    if (!email) {
+        return callback("Email cannot be empty");
+    }
     Donation.list(email, (err, data) => {
         callback(err, data);
     });
@@ -11,10 +13,19 @@ const listDonation = (email: string, callback: Callback) => {
 exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
     const email = event.queryStringParameters!.email as string;
     listDonation(email, (err, data) => {
-        callback(err, {
-            statusCode: 200,
-            body: JSON.stringify(data),
-        });
+        if (err) {
+            callback(null, {
+                statusCode: 400,
+                body: JSON.stringify({ message: err }),
+            });
+        } else {
+            callback(null, {
+                statusCode: 200,
+                body: JSON.stringify({
+                    data: data,
+                }),
+            });
+        }
     });
 };
 
