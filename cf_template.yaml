@@ -45,3 +45,13 @@ Resources:
       Handler: search.handler
       Role: !GetAtt DonationLambdaRole.Arn
       Runtime: nodejs16.x
+
+  DonationAPI:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      BodyS3Location:
+        Bucket: suphan-fayong-public-openapi-specifications
+        Key: donation-api/openapi3.yaml
+      Description: Making and viewing donations
+      Parameters:
+        endpointConfigurationTypes: REGIONAL
