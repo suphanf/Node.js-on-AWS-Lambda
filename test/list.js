@@ -19,6 +19,7 @@ const valid2 = {
 };
 
 before(() => {
+    Donation.delete(TEST_EMAIL);
     createDonation(valid1, () => {});
     createDonation(valid2, () => {});
 });

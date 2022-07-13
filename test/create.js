@@ -50,6 +50,9 @@ const invalid6 = {
     "name": "Test user",
 };
 
+before(() => {
+    Donation.delete(TEST_EMAIL);
+});
 
 describe('Donation Create', function() {
     it('should accept a valid request with a name', function () {
