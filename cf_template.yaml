@@ -55,3 +55,21 @@ Resources:
       Description: Making and viewing donations
       Parameters:
         endpointConfigurationTypes: REGIONAL
+
+  DonationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Donation
+      AttributeDefinitions:
+      - AttributeName: "email"
+        AttributeType: "S"
+      - AttributeName: "timestamp0"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "email"
+        KeyType: "HASH"
+      - AttributeName: "timestamp0"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
