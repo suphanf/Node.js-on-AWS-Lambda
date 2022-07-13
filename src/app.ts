@@ -6,14 +6,14 @@ import listDonation from './list';
 
 const createHandler: RequestHandler = (req, res) => {
     createDonation(req.body.email, req.body.name, req.body.amount, (err, data) => {
-        if (err) { res.json(err); }
+        if (err) { res.status(400).json(err); }
         else { res.json(data); }
     });
 };
 
 const listHandler: RequestHandler = (req, res) => {
     listDonation(req.query.email as string, (err, data) => {
-        if (err) { res.json(err); }
+        if (err) { res.status(400).json(err); }
         else { res.json(data); }
     });
 };

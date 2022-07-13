@@ -26,10 +26,13 @@ class Donation {
             TableName: 'Donation',
             Item: {
                 'email': { S: this.email },
-                'name': { S: this.name },
+                'name': { S: '' },
                 'amount': { S: this.amount.toString() },
                 'timestamp0': { S: this.timestamp.toISOString() },
             }
+        }
+        if (this.name) {
+            params.Item.name.S = this.name;
         }
         dynamoDB.putItem(params, (err) => {
             if (err) {
