@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "0b67c7ff-f2c8-4fd1-8e56-3f55c45c7282",
+		"name": "Donation API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create - invalid request 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 350,\r\n    \"name\": \"Alexander\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_HOST}}/donations",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - invalid request 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"alexander_323@mailinator.com\",\r\n    \"name\": \"Alexander\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_HOST}}/donations",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - valid request 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 350,\r\n    \"email\": \"alexander_323@mailinator.com\",\r\n    \"name\": \"Alexander\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_HOST}}/donations",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - valid request 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 210.85,\r\n    \"email\": \"alexander_356@mailinator.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_HOST}}/donations",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List - invalid request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_HOST}}/donations",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List - valid request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_HOST}}/donations?email=alexander_323@mailinator.com",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "alexander_323@mailinator.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_HOST}}/donations/search",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search with limit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_HOST}}/donations/search?limit=2",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"donations",
+						"search"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
