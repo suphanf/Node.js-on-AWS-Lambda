@@ -37,6 +37,7 @@ exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewa
     const body = JSON.parse(event.body || "{}");
     createDonation(body, (err, data) => {
         if (err) {
+            console.error("Create Error:", body);
             callback(null, {
                 statusCode: 400,
                 body: JSON.stringify({ message: err }),
@@ -44,7 +45,7 @@ exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewa
         } else {
             const accountId = context.invokedFunctionArn.split(':')[4];
             notify(accountId, data!, (err) => {
-                console.log(err);
+                console.error("Notify Error:", err);
             });
             callback(null, {
                 statusCode: 200,

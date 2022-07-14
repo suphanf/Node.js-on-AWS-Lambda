@@ -11,6 +11,7 @@ const searchDonation = (params: any, callback: SearchCallback) => {
 exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
     searchDonation(event.queryStringParameters || {}, (err, data, email, timestamp) => {
         if (err) {
+            console.error("Search Error:", err);
             callback(null, {
                 statusCode: 400,
                 body: JSON.stringify({ message: err }),

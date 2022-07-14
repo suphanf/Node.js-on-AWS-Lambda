@@ -32,7 +32,7 @@ exports.handler = (event: SQSEvent) => {
         const verifyEmail = () => {
             ses.verifyEmailIdentity({
                 EmailAddress: body.email
-            }, () => {});
+            }, (err) => { console.error("Verify Email Error:", err); });
         };
         Donation.list(body.email, (err, data) => {
             if (err) { console.log(err); }

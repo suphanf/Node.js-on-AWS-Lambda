@@ -14,6 +14,7 @@ const listDonation = (params: any, callback: ListCallback) => {
 exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
     listDonation(event.queryStringParameters || {}, (err, data) => {
         if (err) {
+            console.error("List Error:", err);
             callback(null, {
                 statusCode: 400,
                 body: JSON.stringify({ message: err }),
