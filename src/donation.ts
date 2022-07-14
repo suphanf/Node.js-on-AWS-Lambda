@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk';
 
 const dynamoDB = new AWS.DynamoDB();
+const sqs = new AWS.SQS();
 
 type SearchCallback = (err?: string, data?: Donation[], email?: string, timestamp?: string) => void;
 
@@ -41,6 +42,19 @@ class Donation {
                 callback(err.message);
             } else {
                 callback(undefined, this);
+            }
+        });
+    }
+
+    static notify(accountId: string, donation: Donation, callback: (err: string) => void) {
+        const params = {
+            QueueUrl: `${sqs.endpoint.href}${accountId}/donation-confirmation`,
+            DelaySeconds: 10,
+            MessageBody: JSON.stringify(donation),
+        };
+        sqs.sendMessage(params, (err) => {
+            if (err) {
+                callback(err.message);
             }
         });
     }

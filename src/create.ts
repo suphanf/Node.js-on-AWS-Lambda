@@ -26,6 +26,10 @@ exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewa
                 body: JSON.stringify({ message: err }),
             });
         } else {
+            const accountId = context.invokedFunctionArn.split(':')[4];
+            Donation.notify(accountId, data!, (err) => {
+                console.log(err);
+            });
             callback(null, {
                 statusCode: 200,
                 body: JSON.stringify(data),
