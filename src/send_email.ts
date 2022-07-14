@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import { SQSEvent } from 'aws-lambda';
+import Donation from './donation';
 
 const ses = new AWS.SES();
 
@@ -28,12 +29,17 @@ exports.handler = (event: SQSEvent) => {
                 }
             }
         }
-
-        ses.sendEmail(params, (err) => {
-            if (err) {
-                ses.verifyEmailIdentity({
-                    EmailAddress: body.email
-                }, () => {});
+        const verifyEmail = () => {
+            ses.verifyEmailIdentity({
+                EmailAddress: body.email
+            }, () => {});
+        };
+        Donation.list(body.email, (err, data) => {
+            if (err) { console.log(err); }
+            else if (data!.length >= +process.env.DONATION_COUNT!) {
+                ses.sendEmail(params, (err) => {
+                    if (err) { verifyEmail(); }
+                });
             }
         });
     }

@@ -8,6 +8,10 @@ Parameters:
   SenderEmail:
     Type: String
     Description: This sender email must have been verified in SES.
+  DonationCountBeforeSendingEmail:
+    Type: Number
+    Default: 2
+    Description: If a user donates X times, a thank-you email will be sent.
 
 Resources:
   DonationLambdaRole:
@@ -74,6 +78,7 @@ Resources:
       Environment:
         Variables:
           SENDER_EMAIL: !Ref SenderEmail
+          DONATION_COUNT: !Ref DonationCountBeforeSendingEmail
 
   DonationConfirmationEvent:
     Type: AWS::Lambda::EventSourceMapping
