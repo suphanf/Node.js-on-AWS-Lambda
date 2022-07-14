@@ -5,6 +5,9 @@ Parameters:
   S3BucketForOpenAPI:
     Type: String
     Default: suphan-fayong-public-openapi-specifications
+  SenderEmail:
+    Type: String
+    Description: This sender email must have been verified in SES.
 
 Resources:
   DonationLambdaRole:
@@ -23,6 +26,8 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonSQSFullAccess
+        - arn:aws:iam::aws:policy/AmazonSESFullAccess
   DonationCreate:
     Type: AWS::Lambda::Function
     Properties:
@@ -33,6 +38,9 @@ Resources:
       Handler: create.handler
       Role: !GetAtt DonationLambdaRole.Arn
       Runtime: nodejs16.x
+      Environment:
+        Variables:
+          SQS_NAME: !GetAtt DonationConfirmationQueue.QueueName
   DonationList:
     Type: AWS::Lambda::Function
     Properties:
@@ -53,6 +61,26 @@ Resources:
       Handler: search.handler
       Role: !GetAtt DonationLambdaRole.Arn
       Runtime: nodejs16.x
+  DonationSendEmail:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: !Ref S3BucketForLambda
+        S3Key: donation-api/send_email.zip
+      Description: Donation API - Send Email Function
+      Handler: send_email.handler
+      Role: !GetAtt DonationLambdaRole.Arn
+      Runtime: nodejs16.x
+      Environment:
+        Variables:
+          SENDER_EMAIL: !Ref SenderEmail
+
+  DonationConfirmationEvent:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      Enabled: true
+      EventSourceArn: !GetAtt DonationConfirmationQueue.Arn
+      FunctionName: !GetAtt DonationSendEmail.Arn
 
   DonationAPI:
     Type: AWS::ApiGateway::RestApi
@@ -81,3 +109,8 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+
+  DonationConfirmationQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      DelaySeconds: 10
