@@ -1,8 +1,11 @@
 import { APIGatewayEvent, Context, APIGatewayProxyCallback } from 'aws-lambda';
+import AWS from 'aws-sdk';
 import Donation from './donation';
 
+const sqs = new AWS.SQS();
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const amountRegex = /^[0-9]+(\.[0-9]{0,2})?$/;
+
 type CreateCallback = (err?: string, data?: Donation) => void;
 const createDonation = (body: any, callback: CreateCallback) => {
     const email: string = body.email;
@@ -17,6 +20,19 @@ const createDonation = (body: any, callback: CreateCallback) => {
     donation.save(callback);
 };
 
+const notify = (accountId: string, donation: Donation, callback: (err: string) => void) => {
+    const params = {
+        QueueUrl: `${sqs.endpoint.href}${accountId}/${process.env.SQS_NAME}`,
+        DelaySeconds: 10,
+        MessageBody: JSON.stringify(donation),
+    };
+    sqs.sendMessage(params, (err) => {
+        if (err) {
+            callback(err.message);
+        }
+    });
+}
+
 exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
     const body = JSON.parse(event.body || "{}");
     createDonation(body, (err, data) => {
@@ -27,7 +43,7 @@ exports.handler = (event: APIGatewayEvent, context: Context, callback: APIGatewa
             });
         } else {
             const accountId = context.invokedFunctionArn.split(':')[4];
-            Donation.notify(accountId, data!, (err) => {
+            notify(accountId, data!, (err) => {
                 console.log(err);
             });
             callback(null, {
